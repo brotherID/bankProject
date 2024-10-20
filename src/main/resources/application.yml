@@ -1,0 +1,41 @@
+jwt:
+  auth:
+    converter:
+      principle-attribute: preferred_username
+      resource-id: bank-client
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+spring:
+  application:
+    name: file-exchange
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    password: azerty
+    url: jdbc:sqlserver://localhost:1433;databaseName=DB_BANK;encrypt=false
+    username: sa
+  jackson:
+    time-zone: Africa/Casablanca
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
+        format_sql: true
+    show-sql: true
+
+
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8881/realms/bank-realm
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
