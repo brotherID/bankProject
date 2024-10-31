@@ -22,14 +22,7 @@ import java.util.stream.Stream;
 @Component
 @AllArgsConstructor
 public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationToken> {
-
-
-
-
-
-
     private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-
     private final JwtAuthConverterProperties jwtAuthConverterProperties;
 
     @Override
