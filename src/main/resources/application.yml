@@ -37,5 +37,6 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8881/realms/bank-realm
+          #issuer-uri: http://localhost:8881/realms/bank-realm #local
+          issuer-uri: http://localhost:8089/realms/bank-realm #docker
           jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs

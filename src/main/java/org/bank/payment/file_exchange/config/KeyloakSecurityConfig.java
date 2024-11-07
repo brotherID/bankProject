@@ -38,6 +38,9 @@ public class KeyloakSecurityConfig {
             httpSecurity.authorizeHttpRequests(auth ->
                     {
                         auth.requestMatchers(HttpMethod.GET,"/test/hello-1").permitAll();
+                        auth.requestMatchers(HttpMethod.GET,"/actuator/**").permitAll();
+                        auth.requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll();
+                        auth.requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll(); // pour autoriser les docs Swagger
 //                        auth.requestMatchers(HttpMethod.GET,"/test/hello-2").hasRole(ADMiN);
 //                        auth.requestMatchers(HttpMethod.GET,"/test/hello-3").hasRole(USER);
 //                        auth.requestMatchers(HttpMethod.GET,"/test/hello-4").hasAnyRole(USER,ADMiN);
