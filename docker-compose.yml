@@ -1,17 +1,19 @@
 version: "3.8"
 services:
-  keycloak:
+  my_keycloak:
     image: keycloak/keycloak
     environment:
       # Remplace les valeurs ci-dessous par tes propres valeurs
       - KEYCLOAK_ADMIN=sara
       - KEYCLOAK_ADMIN_PASSWORD=azerty01**
       - KC_DB=postgres
-      - KC_DB_URL=jdbc:postgresql://keycloak-db/keycloak
+      - KC_DB_URL=jdbc:postgresql://keycloak-db:5432/keycloak
       - KC_DB_USERNAME=keycloak
       - KC_DB_PASSWORD=password
       - KC_HOSTNAME=localhost
-    command: start-dev
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import
+    command: start-dev  --import-realm
     ports:
       - "8089:8080"
     depends_on:
@@ -23,7 +25,8 @@ services:
         - POSTGRES_DB=keycloak
         - POSTGRES_USER=keycloak
         - POSTGRES_PASSWORD=password
-
+      ports:
+        - "5435:5432"
 
   db:
     image: postgres
@@ -44,3 +47,23 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: mysecretpassword
+
+  file-exchange:
+    image: file-exchange-0.0.1:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/db_bank
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres123
+      SPRING_CONFIG_LOCATION: "file:/app/config/application.yml"
+      #SPRING_CONFIG_LOCATION: "./src/main/resources/application.yml"
+      HOSTNAME_KEYCLOAK: my_keycloak
+    ports:
+      - "9090:9090"
+    depends_on:
+      - db
+      - my_keycloak
+    volumes:
+      - ./src/main/resources/application-dev.yml:/app/config/application.yml
