@@ -1,24 +1,33 @@
 package org.bank.payment.file.exchange.api;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.bank.payment.file.exchange.service.kafka.NotificationProducerService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.zalando.problem.Problem;
-import org.zalando.problem.Status;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/test")
+@RequiredArgsConstructor
 public class DemoController {
 
-    @GetMapping("/test-error")
-    public void testError() {
-        throw Problem.builder()
-                .withTitle("Test Error")
-                .withStatus(Status.NOT_FOUND)
-                .withDetail("Ceci est un test d'erreur.")
-                .build();
+    @Value("${spring.kafka.topics.event-notification}")
+    private String eventNotificationTopic;
+
+    private final NotificationProducerService notificationProducerService;
+
+
+    @PostMapping("/publish")
+    public String publish(@RequestParam String message) {
+        notificationProducerService.sendMessage(eventNotificationTopic, message);
+        return "Message sent!";
     }
+
+//    @PostMapping("/publish2")
+//    public String publish2(@RequestParam String message) {
+//        return message;
+//    }
 
 
     @GetMapping("/hello-1")
@@ -26,9 +35,6 @@ public class DemoController {
     public String hello() {
         return "Anyone can access";
     }
-
-
-
 
 
     @GetMapping("/hello-2")

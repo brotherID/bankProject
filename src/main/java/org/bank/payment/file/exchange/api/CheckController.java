@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.zalando.problem.Problem;
-import org.zalando.problem.Status;
 
 import static org.zalando.problem.Status.NOT_FOUND;
 

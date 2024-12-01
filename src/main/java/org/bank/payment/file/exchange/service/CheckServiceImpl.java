@@ -7,6 +7,7 @@ import org.bank.payment.file.exchange.entities.Discount;
 import org.bank.payment.file.exchange.mapper.CheckMapper;
 import org.bank.payment.file.exchange.repository.CheckRepository;
 import org.bank.payment.file.exchange.repository.DiscountRepository;
+import org.bank.payment.file.exchange.service.kafka.NotificationProducerService;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,6 +21,8 @@ public class CheckServiceImpl implements CheckService{
     private final CheckRepository checkRepository;
 
     private final DiscountRepository discountRepository;
+
+    private final NotificationProducerService notificationProducerService;
 
     @Override
     public CheckDTO addCheck(CheckDTO checkDTO, String idDiscount) {
@@ -39,7 +42,9 @@ public class CheckServiceImpl implements CheckService{
 
     @Override
     public Optional<CheckDTO> getCheckById(String checkId) {
-       return  checkRepository.findById(checkId)
+        String message = System.getProperty("user.name");
+        notificationProducerService.sendMessage("my-topic", message);
+        return  checkRepository.findById(checkId)
                .map(checkMapper::toCheckDTO);
     }
 }

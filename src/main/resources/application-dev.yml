@@ -33,6 +33,15 @@ spring:
         format_sql: true
     show-sql: true
 
+  kafka:
+    bootstrap-servers: ${HOSTNAME_KAFKA}:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    topics:
+      event-notification: event-notification
+
+
 
 
   security:
@@ -49,3 +58,4 @@ spring:
           issuer-uri: http://localhost:8089/realms/bank-realm
           jwk-set-uri: http://${HOSTNAME_KEYCLOAK}:8080/realms/bank-realm/protocol/openid-connect/certs
           #jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+

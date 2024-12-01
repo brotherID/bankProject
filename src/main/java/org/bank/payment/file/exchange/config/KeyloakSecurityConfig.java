@@ -27,10 +27,12 @@ public class KeyloakSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-        httpSecurity.authorizeHttpRequests(auth ->
+        httpSecurity
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/test/publish"))
+                .authorizeHttpRequests(auth ->
                 {
                     auth.requestMatchers(HttpMethod.GET, "/test/hello-1").permitAll();
-                    auth.requestMatchers(HttpMethod.GET, "/test/test-error").permitAll();
+                    auth.requestMatchers(HttpMethod.POST, "/test/publish").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/actuator/**").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll(); // pour autoriser les docs Swagger

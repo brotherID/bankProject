@@ -26,7 +26,7 @@ services:
         - POSTGRES_USER=keycloak
         - POSTGRES_PASSWORD=password
       ports:
-        - "5435:5432"
+        - "32769:5432"
 
   db:
     image: postgres
@@ -60,10 +60,54 @@ services:
       SPRING_CONFIG_LOCATION: "file:/app/config/application.yml"
       #SPRING_CONFIG_LOCATION: "./src/main/resources/application.yml"
       HOSTNAME_KEYCLOAK: my_keycloak
+      HOSTNAME_KAFKA: kafka
     ports:
       - "9090:9090"
     depends_on:
       - db
       - my_keycloak
+      - kafka
     volumes:
       - ./src/main/resources/application-dev.yml:/app/config/application.yml
+
+
+  ops:
+    image: ops-0.0.1:latest
+    environment:
+      #SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/db_bank
+      #SPRING_DATASOURCE_USERNAME: postgres
+      #SPRING_DATASOURCE_PASSWORD: postgres123
+      SPRING_CONFIG_LOCATION: "file:/app/config/application.yml"
+      #SPRING_CONFIG_LOCATION: "./src/main/resources/application.yml"
+      HOSTNAME_KAFKA: kafka
+    ports:
+      - "9088:9088"
+    depends_on:
+      - kafka
+    volumes:
+      - C:/sara/workspaceProjectIntellij/ops/src/main/resources/application-dev.yml:/app/config/application.yml
+
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+      image: confluentinc/cp-kafka:7.3.0
+      container_name: kafka
+      depends_on:
+        - zookeeper
+      environment:
+        KAFKA_BROKER_ID: 1
+        KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+        #KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+        KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+        KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+        KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      ports:
+        - "9092:9092"
