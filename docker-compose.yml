@@ -70,20 +70,32 @@ services:
     volumes:
       - ./src/main/resources/application-dev.yml:/app/config/application.yml
 
+  mongodb:
+     image: mongo:6.0
+     container_name: mongodb-container
+     ports:
+      - "27017:27017"
+     environment:
+       MONGO_INITDB_ROOT_USERNAME: root
+       MONGO_INITDB_ROOT_PASSWORD: rootpassword
 
   ops:
     image: ops-0.0.1:latest
     environment:
-      #SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/db_bank
-      #SPRING_DATASOURCE_USERNAME: postgres
-      #SPRING_DATASOURCE_PASSWORD: postgres123
+      #SPRING_DATA_MONGODB_HOST: mongodb
+      #SPRING_DATA_MONGODB_PORT: 27017
+      #SPRING_DATA_MONGODB_DATABASE: purchasePoint
+      #SPRING_DATA_MONGODB_USERNAME: root
+      #SPRING_DATA_MONGODB_PASSWORD: rootpassword
+      #SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE: admin
       SPRING_CONFIG_LOCATION: "file:/app/config/application.yml"
-      #SPRING_CONFIG_LOCATION: "./src/main/resources/application.yml"
+      HOSTNAME_MONGO: mongodb
       HOSTNAME_KAFKA: kafka
     ports:
       - "9088:9088"
     depends_on:
       - kafka
+      - mongodb
     volumes:
       - C:/sara/workspaceProjectIntellij/ops/src/main/resources/application-dev.yml:/app/config/application.yml
 
